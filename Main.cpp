@@ -174,10 +174,6 @@ void uTurn()
     compass.turnRightUpdate();
 }
 
-void updateVal()
-{
-}
-
 void updateWall(uint8_t x, uint8_t y)
 {
     if (API::wallFront())
@@ -194,14 +190,14 @@ void updateWall(uint8_t x, uint8_t y)
     {
         mazeMem.setBitWall(x, y, compass.getNavLeftLabel());
     }
-    //mazeMem.setText();
-    updateVal();
+    mazeMem.floodfill();
 }
 bool checked = false;
+int count1 = 0;
 int main(int argc, char *argv[])
 {
     compass.printCoor();
-    //mazeMem.setText();
+    mazeMem.setText();
 
     while (true)
     {
@@ -219,7 +215,7 @@ int main(int argc, char *argv[])
 
         if (!API::wallFront() && !checked)
         {
-            log(std::to_string(compass.getNav()));
+            //log(std::to_string(compass.getNav()));
             if (neighbour[currentDir] != -1)
             {
                 if (neighbour[currentDir] < currentVal)
@@ -235,6 +231,32 @@ int main(int argc, char *argv[])
                     {
                         /* code */ log("Checked");
                         checked = true;
+                    }
+                }
+                else
+                {
+                    if (count1 == 0)
+                    {
+                        turnLeft();
+                        // updateWall(compass.getX(), compass.getY());
+
+                        turnLeft();
+                        // updateWall(compass.getX(), compass.getY());
+                        forward();
+                        // updateWall(compass.getX(), compass.getY());
+                        updateWall(compass.getX(), compass.getY());
+                        turnRight();
+                        // updateWall(compass.getX(), compass.getY());
+                        forward();
+                        updateWall(compass.getX(), compass.getY());
+                        // log("Stuck Here");
+                        count1++;
+                    }
+                    else if (count1 == 1)
+                    {
+                        turnRight();
+                        forward();
+                        updateWall(compass.getX(), compass.getY());
                     }
                 }
             }
